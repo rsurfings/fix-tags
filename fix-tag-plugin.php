@@ -45,32 +45,28 @@ class FixTag_Plugin
         add_action('admin_enqueue_scripts', array($this, 'cstm_css_and_js'));
 
         $this->url = wp_parse_url(home_url($_SERVER['REQUEST_URI']));
-       
+
         $tags =  explode(", ", get_option('field_tags'));
         // Hook the the_title filter hook, run the function named change_title
         add_filter('the_title', function ($title) use ($tags) {
-            if($this->url['path'] != '/'){
+            if ($this->url['path'] != '/') {
                 return $title;
-            }else{
+            } else {
                 return $this->change_title($title, $tags);
             }
         }, 10, 1);
-
-        
     }
     function change_title($title, $tags)
     {
-
         foreach ($tags as $tag) {
 
             //searching for the exacly needle tag
             if (preg_match("/\b$tag\b/", $title)) {
-                $pos = strpos($title, $tag);
                 $replaced = ltrim(substr($title, strlen($tag)));
                 $title  = $replaced . " " . '(' . $tag . ')';
+                break;
             }
         }
-
         return ucfirst($title);
     }
     function cstm_css_and_js($hook)
@@ -135,7 +131,7 @@ class FixTag_Plugin
                     exit;
                 } else {
 
-                    $tags = implode(', ', array_column(json_decode(stripslashes($_POST['tags']),true), 'value'));
+                    $tags = implode(', ', array_column(json_decode(stripslashes($_POST['tags']), true), 'value'));
 
                     if ($this->validate($tags)) {
                         update_option('field_tags', $tags);
