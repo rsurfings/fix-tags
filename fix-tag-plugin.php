@@ -63,7 +63,7 @@ class FixTag_Plugin
         foreach ($tags as $tag) {
             //searching for the exac    ly needle tag
             if (preg_match("/\b$tag\b/", $title)) {
-                if (strpos($title, "($tag)") || strpos($title, "($tag )"))
+                if (strpos($title, "(") || strpos($title, ")"))
                     break;
 
                 $replaced = ltrim(substr($title, strlen($tag)));
