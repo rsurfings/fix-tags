@@ -59,9 +59,11 @@ class FixTag_Plugin
     function change_title($title, $tags)
     {
         foreach ($tags as $tag) {
-
-            //searching for the exacly needle tag
+            //searching for the exac    ly needle tag
             if (preg_match("/\b$tag\b/", $title)) {
+                if (strpos($title, "($tag)"))
+                    break;
+
                 $replaced = ltrim(substr($title, strlen($tag)));
                 $title  = $replaced . " " . '(' . $tag . ')';
                 break;
