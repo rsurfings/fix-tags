@@ -52,7 +52,7 @@ class FixTag_Plugin
             if($this->url['path'] != '/'){
                 return $title;
             }else{
-             return $this->change_title($title, $tags);
+                return $this->change_title($title, $tags);
             }
         }, 10, 1);
 
@@ -66,7 +66,7 @@ class FixTag_Plugin
             //searching for the exacly needle tag
             if (preg_match("/\b$tag\b/", $title)) {
                 $pos = strpos($title, $tag);
-                $replaced = ltrim(substr($title, $pos + strlen($tag)));
+                $replaced = ltrim(substr($title, strlen($tag)));
                 $title  = $replaced . " " . '(' . $tag . ')';
             }
         }
