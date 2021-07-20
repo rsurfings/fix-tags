@@ -35,6 +35,7 @@ class FixTag_Plugin
 {
 
     protected $url;
+    protected $path_url;
 
     public function __construct()
     {
@@ -45,11 +46,12 @@ class FixTag_Plugin
         add_action('admin_enqueue_scripts', array($this, 'cstm_css_and_js'));
 
         $this->url = wp_parse_url(home_url($_SERVER['REQUEST_URI']));
+        $this->path_url = get_option('field_path_url');
 
         $tags =  explode(", ", get_option('field_tags'));
         // Hook the the_title filter hook, run the function named change_title
         add_filter('the_title', function ($title) use ($tags) {
-            if ($this->url['path'] != '/') {
+            if ($this->url['path'] != $this->path_url) {
                 return $title;
             } else {
                 return $this->change_title($title, $tags);
@@ -109,6 +111,12 @@ class FixTag_Plugin
                                 <input type="text" name='tags' id="tags" placeholder='write some tags' value="<?php echo get_option('field_tags'); ?>" class="regular-text" />
                             </td>
                         </tr>
+                        <tr>
+                            <th><label for="path_url">Path Url</label></th>
+                            <td>
+                                <input type="text" name='path_url' id="path_url" placeholder='write some path_url' value="<?php echo get_option('field_path_url'); ?>" class="regular-text" />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <p class="submit">
@@ -137,6 +145,11 @@ class FixTag_Plugin
 
                     if ($this->validate($tags)) {
                         update_option('field_tags', $tags);
+
+                        $path_url = $_POST['path_url'];
+                        if ($this->validate($path_url)) {
+                            update_option('field_path_url', $path_url);
+                        }
                     ?>
                 <div class="updated">
                     <p>Your tags were saved!</p>
