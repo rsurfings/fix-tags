@@ -31,9 +31,10 @@ Foundation, Inc., Montezuma Avenu, 315, Itanhaem, SP 1174000, BR.
 
 Copyright 2020/2021 Sharkcoders, Inc.
 */
-
 class FixTag_Plugin
 {
+
+    protected $url;
 
     public function __construct()
     {
@@ -43,11 +44,18 @@ class FixTag_Plugin
         // custom css and js
         add_action('admin_enqueue_scripts', array($this, 'cstm_css_and_js'));
 
+        $this->url = wp_parse_url(home_url($_SERVER['REQUEST_URI']));
+       
         $tags =  explode(", ", get_option('field_tags'));
         // Hook the the_title filter hook, run the function named change_title
         add_filter('the_title', function ($title) use ($tags) {
+            if($this->url['path'] != '/'){
+                return $title;
+            }
             return $this->change_title($title, $tags);
         }, 10, 1);
+
+        
     }
     function change_title($title, $tags)
     {
@@ -55,8 +63,7 @@ class FixTag_Plugin
         foreach ($tags as $tag) {
 
             //searching for the exacly needle tag
-            if (preg_match("/\b$tag\b/i", $title)) {
-
+            if (preg_match("/\b$tag\b/", $title)) {
                 $pos = strpos($title, $tag);
                 $replaced = ltrim(substr($title, $pos + strlen($tag)));
                 $title  = $replaced . " " . '(' . $tag . ')';
@@ -143,5 +150,4 @@ class FixTag_Plugin
                 }
             }
         }
-
         new FixTag_Plugin();
