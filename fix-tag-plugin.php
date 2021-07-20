@@ -51,8 +51,9 @@ class FixTag_Plugin
         add_filter('the_title', function ($title) use ($tags) {
             if($this->url['path'] != '/'){
                 return $title;
+            }else{
+             return $this->change_title($title, $tags);
             }
-            return $this->change_title($title, $tags);
         }, 10, 1);
 
         
@@ -134,7 +135,7 @@ class FixTag_Plugin
                     exit;
                 } else {
 
-                    $tags = implode(', ', array_column(json_decode(stripslashes($_POST['tags'])), 'value'));
+                    $tags = implode(', ', array_column(json_decode(stripslashes($_POST['tags']),true), 'value'));
 
                     if ($this->validate($tags)) {
                         update_option('field_tags', $tags);
