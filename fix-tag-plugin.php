@@ -61,14 +61,18 @@ class FixTag_Plugin
     function change_title($title, $tags)
     {
         foreach ($tags as $tag) {
-            //searching for the exac    ly needle tag
+            //searching for the exacly needle tag
             if (preg_match("/\b$tag\b/", $title)) {
-                if (strpos($title, "(") || strpos($title, ")"))
-                    break;
 
-                $replaced = ltrim(substr($title, strlen($tag)));
-                $title  = $replaced . " " . '(' . $tag . ')';
-                break;
+                $pos = strpos($title, " ");
+                
+                if (strpos($title, "(") || strpos($title, ")") || $pos !== 1 && strlen($tag) !== $pos) {
+                    break;
+                } else {
+
+                    $replaced = ltrim(substr($title, strlen($tag)));
+                    $title  = $replaced . " " . '(' . $tag . ')';
+                }
             }
         }
         return ucfirst($title);
